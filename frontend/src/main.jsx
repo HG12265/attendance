@@ -2353,13 +2353,28 @@ function Scanner({ notify, setError }) {
   async function start() {
     setLocalError("");
     setResult(null);
+    setScanning(true);
+    // Allow DOM to layout the unhidden #qr-reader with non-zero clientWidth/clientHeight
+    await new Promise((resolve) => setTimeout(resolve, 150));
     try {
-      const qr = instance.current || new Html5Qrcode("qr-reader");
+      if (instance.current?.isScanning) {
+        await instance.current.stop().catch(() => {});
+      }
+      const qr = new Html5Qrcode("qr-reader");
       instance.current = qr;
+      const scanConfig = {
+        fps: 10,
+        qrbox: (viewfinderWidth, viewfinderHeight) => {
+          const edge = Math.floor(
+            Math.min(viewfinderWidth, viewfinderHeight) * 0.75,
+          );
+          return { width: Math.max(edge, 180), height: Math.max(edge, 180) };
+        },
+      };
       try {
         await qr.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 240, height: 240 } },
+          scanConfig,
           submit,
           () => {},
         );
@@ -2368,25 +2383,15 @@ function Scanner({ notify, setError }) {
         if (cameras && cameras.length > 0) {
           const backCam =
             cameras.find((c) => /back|rear|environment/i.test(c.label)) ||
-            cameras[0];
-          await qr.start(
-            backCam.id,
-            { fps: 10, qrbox: { width: 240, height: 240 } },
-            submit,
-            () => {},
-          );
+            cameras[cameras.length - 1];
+          await qr.start(backCam.id, scanConfig, submit, () => {});
         } else {
-          await qr.start(
-            { facingMode: "user" },
-            { fps: 10, qrbox: { width: 240, height: 240 } },
-            submit,
-            () => {},
-          );
+          await qr.start({ facingMode: "user" }, scanConfig, submit, () => {});
         }
       }
-      setScanning(true);
     } catch (e) {
       console.error("Camera start error:", e);
+      setScanning(false);
       setLocalError(
         "Camera could not start. Use HTTPS, allow camera access in Chrome site settings, and close other apps using your camera.",
       );

@@ -1207,12 +1207,30 @@ td small {
   margin-top: 16px;
 }
 #qr-reader {
-  margin: 15px 25px;
-  border-radius: 10px;
+  width: 100%;
+  max-width: 360px;
+  min-height: 280px;
+  margin: 15px auto;
+  border-radius: 16px;
   overflow: hidden;
+  background: #111;
+  position: relative;
 }
 #qr-reader video {
-  border-radius: 10px;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 280px;
+  object-fit: cover !important;
+  border-radius: 16px;
+  display: block;
+}
+#qr-reader__scan_region {
+  min-height: 280px;
+}
+#qr-reader__scan_region video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
 }
 .scanner-guide {
   padding: 26px;
