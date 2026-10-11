@@ -2356,16 +2356,39 @@ function Scanner({ notify, setError }) {
     try {
       const qr = instance.current || new Html5Qrcode("qr-reader");
       instance.current = qr;
-      await qr.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 240, height: 240 } },
-        submit,
-        () => {},
-      );
+      try {
+        await qr.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 240, height: 240 } },
+          submit,
+          () => {},
+        );
+      } catch {
+        const cameras = await Html5Qrcode.getCameras().catch(() => []);
+        if (cameras && cameras.length > 0) {
+          const backCam =
+            cameras.find((c) => /back|rear|environment/i.test(c.label)) ||
+            cameras[0];
+          await qr.start(
+            backCam.id,
+            { fps: 10, qrbox: { width: 240, height: 240 } },
+            submit,
+            () => {},
+          );
+        } else {
+          await qr.start(
+            { facingMode: "user" },
+            { fps: 10, qrbox: { width: 240, height: 240 } },
+            submit,
+            () => {},
+          );
+        }
+      }
       setScanning(true);
     } catch (e) {
+      console.error("Camera start error:", e);
       setLocalError(
-        "Camera could not start. Use HTTPS, allow camera access, and close other apps using your camera.",
+        "Camera could not start. Use HTTPS, allow camera access in Chrome site settings, and close other apps using your camera.",
       );
     }
   }
