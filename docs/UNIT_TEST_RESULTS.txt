@@ -1,0 +1,38 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> attendly@1.0.0 test:unit
+> npm run test:unit -w backend
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @attendly/backend@1.0.0 test:unit
+> node --test test/security.test.js
+
+✔ startup rejects missing and reused signing keys (1.228844ms)
+✔ QR binds a session, server timestamp, audience and expiry (3.354502ms)
+✔ QR tampering is rejected (0.829506ms)
+✔ expired QR is rejected without client clock trust (0.594664ms)
+✔ auth tokens cannot be used as QR challenges (0.869394ms)
+✔ QR rejects wrong audience and unsigned tokens (1.062127ms)
+✔ attendance percentages respect excused and historical late policies (0.384674ms)
+✔ all-excused participation has no misleading zero percentage (0.221995ms)
+✔ faculty ownership cannot be substituted by student role (0.276208ms)
+✔ duplicate attendance and active session uniqueness are database-enforced (0.340887ms)
+✔ public identity strips credentials and revocation version (0.401986ms)
+✔ password policy rejects weak values (1.848441ms)
+✔ request origin validation rejects third-party mutations (0.192265ms)
+✔ temporary-password user may change password but cannot access catalog (1.086091ms)
+✔ revoked access tokens are rejected (0.639924ms)
+✔ HTTP middleware rejects missing credentials and hostile origins (51.898509ms)
+✔ token hashes are deterministic and conceal raw refresh tokens (0.341803ms)
+✔ Excel export library writes readable workbooks with patched UUID dependency (55.97346ms)
+✔ PDF export library creates a valid document stream (11.646049ms)
+✔ patched mailer composes reset emails without sending (9.714343ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 871.071056

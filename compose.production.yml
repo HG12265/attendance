@@ -1,0 +1,32 @@
+# Uses an external authenticated MongoDB replica set (for example MongoDB Atlas).
+services:
+  app:
+    build: .
+    init: true
+    restart: unless-stopped
+    env_file: backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      TRUST_PROXY: 1
+    expose: ["4000"]
+    read_only: true
+    tmpfs: ["/tmp"]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in the root .env file}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+volumes:
+  caddy_data:
+  caddy_config:
