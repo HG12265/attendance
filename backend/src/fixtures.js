@@ -24,7 +24,7 @@ export async function createFixtures(password) {
     semester: 3,
   });
   const admin = await User.create({
-    name: "Gowtham",
+    name: "Admin",
     email: "admin@attendly.example",
     code: "ADM001",
     role: "admin",
